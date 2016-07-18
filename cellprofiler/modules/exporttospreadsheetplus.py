@@ -82,7 +82,7 @@ SETTING_OG_OFFSET_V9 = 15
 SETTING_OG_OFFSET_V10 = 17
 SETTING_OG_OFFSET_V11 = 18
 """Offset of the first object group in the settings"""
-SETTING_OG_OFFSET = 19
+SETTING_OG_OFFSET = 20
 
 
 """Offset of the object name setting within an object group"""
@@ -175,15 +175,25 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
             """ %globals())
  
         self.insert_prefix = cps.Binary(
-            "Add a column of the prefix to the Images.csv?",
+            "Add a column of the prefix to the Images.csv file?",
             True,
             doc="""This setting lets you choose whether or not to insert the
             prefix to the Images.csv spreadsheet. This is a feature solely
             meant for convenience when identifying a row of data, relating the
             data to a certain row. Select <i>%(YES)s</i> to add a prefix to 
-            the first column of the Images.csv spreadsheet. Select <i>%(NO)s</i> to use
-            omit the prefix from the spreadsheet.
+            the first column of the Images.csv spreadsheet. Select <i>%(NO)s</i>
+            to omit the prefix from the spreadsheet.
             """ % globals())
+
+        self.add_tokens = cps.Binary(
+            "Add the U, V, X, Y, and J tokens to the Images.csv file?", True,
+            doc="""This setting lets you choose whether or not to insert the U, V, 
+            X, Y, and J tokens to the Images.csv file. Will most likely not be useful
+            for most applications of CellProfiler. Select <i>%(YES)s</i> to add these
+            tokens to beginning of the Images.csv spreadsheet. Select <i>%(NO)s</i>
+            to omit the tokens from the spreadsheet.
+            """ % globals())
+			
         self.wants_overwrite_without_warning = cps.Binary(
             "Overwrite existing files without warning?", False,
             doc="""This setting either prevents or allows overwriting of
@@ -381,6 +391,7 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                   self.use_which_image_for_gene_name,self.gene_name_column,
                   self.wants_everything, self.columns, self.nan_representation,
                   self.wants_prefix, self.prefix, self.insert_prefix,
+                  self.add_tokens,
                   self.wants_overwrite_without_warning]
         for group in self.object_groups:
             result += [group.name, group.previous_file, group.file_name,
@@ -394,7 +405,7 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
             result += [self.prefix]
             result += [self.insert_prefix]
         result += [
-            self.wants_overwrite_without_warning, self.add_metadata,
+            self.add_tokens, self.wants_overwrite_without_warning, self.add_metadata,
             self.excel_limits, self.nan_representation, self.pick_columns]
         if self.pick_columns:
             result += [ self.columns]
@@ -834,12 +845,16 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                                                          cpmeas.IMAGE)
                     if image_features is None:
                         return
+                    dummy_image_features = list(image_features)
+                    if (self.add_tokens):
+                        dummy_image_features.insert(0, "U")
+                        dummy_image_features.insert(1, "V")
+                        dummy_image_features.insert(2, "J")
+                        dummy_image_features.insert(3, "X")
+                        dummy_image_features.insert(4, "Y")
                     if (self.prefix and self.insert_prefix):
-                        dummy_image_features = list(image_features)
                         dummy_image_features.insert(0, "File_Prefix")
-                        writer.writerow(dummy_image_features)
-                    else:
-                        writer.writerow(image_features)
+                    writer.writerow(dummy_image_features)
                 row = []
                 for feature_name in image_features:
 
@@ -866,6 +881,12 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                                 row.append(str(np.NaN))
                         else:
                             row.append(str(value))
+                if (self.add_tokens):
+                    row.insert(0, "U")
+                    row.insert(1, "V")
+                    row.insert(2, "J")
+                    row.insert(3, "X")
+                    row.insert(4, "Y")
                 if (self.prefix and self.insert_prefix):
                     row.insert(0, self.prefix)
                 writer.writerow(row)
