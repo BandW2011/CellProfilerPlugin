@@ -1,6 +1,6 @@
 # CellProfilerPlugin
 
-1. Put prefix into its own column
+1. ~~Put prefix into its own column~~
 2. Break up filename into these variables: u, v, j, x, y, each variable gets its own column
 3. Match up matrixscreener coords into plate coords (A1 to UV)
 
