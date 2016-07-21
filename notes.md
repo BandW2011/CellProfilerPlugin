@@ -1,4 +1,4 @@
-# CellProfilerPlugin
+# Notes
 
 1. ~~Put prefix into its own column~~
 2. Break up filename into these variables: u, v, j, x, y, each variable gets its own column
