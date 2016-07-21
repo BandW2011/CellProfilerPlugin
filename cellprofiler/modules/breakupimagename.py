@@ -1,16 +1,5 @@
 #!/usr/bin/python
-'''
-import sys
 
-def convertImageString( str ):
-	sys.stdout.write( str )
-	sys.stdout = "test"
-	print "test2"
-	return
-
-for arg in sys.argv:
-	print arg
-'''
 import sys
 
 class BNWError( Exception ):
@@ -54,13 +43,30 @@ def clean_tokens( tokens ):
 
 	return cleaned_tokens
 
-
-
 # /gasd/aad/image--L0000--S00--U04--V00--J14--E01--O00--X00--Y00--T0000--Z00--C00.ome.tif
+def get_token( cleaned_tokens, token ):
+    if (token == 'J'):
+        return cleaned_tokens[0]
+    elif (token == 'U'):
+        return cleaned_tokens[1]
+    elif (token == 'V'):
+        return cleaned_tokens[2]
+    elif (token == 'X'):
+        return cleaned_tokens[3]
+    elif (token == 'Y'):
+        return cleaned_tokens[4]
+    else:
+        raise BNWError('BNWError: invalid token selection')
 
+def image_path_to_token( image_path, token ):
+    tokens = clean_tokens(get_tokens(convert_image_string(image_path)))
+    tokens.sort()
+    return get_token(tokens, token)
+
+'''
 if (len (sys.argv) == 1):
 	raise BNWError('BNWError: no arguments')
 else:
-	for num in range(1, len (sys.argv)):
-		converted_string = convert_image_string(sys.argv[num])
-		print clean_tokens(get_tokens(converted_string))
+    for num in range(1, len (sys.argv)):
+        print image_path_to_tokens(sys.argv[num], 'X')
+'''
