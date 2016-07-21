@@ -2,11 +2,45 @@
 
 import sys
 
+import cellprofiler.cpmodule as cpm
+import cellprofiler.settings as cps
+from cellprofiler.settings import YES, NO
+
+'''
+bnwerr = "BNWError: "
+
 class BNWError( Exception ):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
 		return repr(self.value)
+'''
+
+class YoDontUseThisModule(cpm.CPModule):
+    variable_revision_number = 1
+    module_name = 'yo_dont_use_this_module'
+    category = 'Other'
+
+    def create_settings(self):
+        # All the omero images that are loaded are assumed to have
+        # as many or more channels than the highest channel number
+        # the user specifies.
+        self.channels = []
+        self.channel_count = cps.HiddenCount(self.channels, "Channel count")
+        # Add the first channel
+        self.add_channelfn(False)
+
+        # Button for adding other channels
+        self.add_channel = cps.DoSomething("", "Add another channel", self.add_channelfn)
+    
+    def settings(self):
+        return 0
+
+    def run(self, workspace):
+        return 0
+
+    def add_channelfn(self, can_remove_True):
+        return 0;
 
 # takes an image path and strips it 
 def convert_image_string( image_path ):
@@ -18,7 +52,7 @@ def convert_image_string( image_path ):
 		return image_path
 	new_string = image_path[t:len (image_path)]
 	if (new_string[len (new_string) - 1] == "/"):
-		raise BNWError('BNWError: path is a directory')
+		raise Exception
 		quit()
 	if (new_string[0] == "/" and len (new_string) != 1):
 		return new_string[1:len (new_string)]
@@ -56,7 +90,7 @@ def get_token( cleaned_tokens, token ):
     elif (token == 'Y'):
         return cleaned_tokens[4]
     else:
-        raise BNWError('BNWError: invalid token selection')
+        raise Exception
 
 def image_path_to_token( image_path, token ):
     tokens = clean_tokens(get_tokens(convert_image_string(image_path)))

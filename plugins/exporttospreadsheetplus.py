@@ -38,7 +38,7 @@ For details on the nomenclature used by CellProfiler for the exported measuremen
 see <i>Help > General Help > How Measurements Are Named</i>.
 
 See also <b>ExportToDatabase</b>.
-'''%globals()
+''' % globals()
 
 
 
@@ -50,6 +50,7 @@ import errno
 import numpy as np
 import os
 import sys
+import breakupimagename as breakup
 
 import cellprofiler.cpmodule as cpm
 import cellprofiler.measurements as cpmeas
@@ -193,7 +194,7 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
             tokens to beginning of the Images.csv spreadsheet. Select <i>%(NO)s</i>
             to omit the tokens from the spreadsheet.
             """ % globals())
-			
+
         self.wants_overwrite_without_warning = cps.Binary(
             "Overwrite existing files without warning?", False,
             doc="""This setting either prevents or allows overwriting of
@@ -827,6 +828,7 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
         try:
             writer = csv.writer(fd, delimiter=self.delimiter_char)
             for img_number in image_set_numbers:
+                filepath = ""
                 aggs = []
                 if self.wants_aggregate_means:
                     aggs.append(cpmeas.AGG_MEAN)
@@ -847,9 +849,9 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                         return
                     dummy_image_features = list(image_features)
                     if (self.add_tokens):
-                        dummy_image_features.insert(0, "U")
-                        dummy_image_features.insert(1, "V")
-                        dummy_image_features.insert(2, "J")
+                        dummy_image_features.insert(0, "J")
+                        dummy_image_features.insert(1, "U")
+                        dummy_image_features.insert(2, "V")
                         dummy_image_features.insert(3, "X")
                         dummy_image_features.insert(4, "Y")
                     if (self.prefix and self.insert_prefix):
@@ -857,7 +859,6 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                     writer.writerow(dummy_image_features)
                 row = []
                 for feature_name in image_features:
-
                     if feature_name == IMAGE_NUMBER:
                         row.append(str(img_number))
                     else:
@@ -881,12 +882,14 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                                 row.append(str(np.NaN))
                         else:
                             row.append(str(value))
+                        if (feature_name == "Metadata_FileLocation"):
+                            filepath = value
                 if (self.add_tokens):
-                    row.insert(0, "U")
-                    row.insert(1, "V")
-                    row.insert(2, "J")
-                    row.insert(3, "X")
-                    row.insert(4, "Y")
+                    row.insert(0, breakup.image_path_to_token(filepath, 'J'))
+                    row.insert(1, breakup.image_path_to_token(filepath, 'U'))
+                    row.insert(2, breakup.image_path_to_token(filepath, 'V'))
+                    row.insert(3, breakup.image_path_to_token(filepath, 'X'))
+                    row.insert(4, breakup.image_path_to_token(filepath, 'Y'))
                 if (self.prefix and self.insert_prefix):
                     row.insert(0, self.prefix)
                 writer.writerow(row)
