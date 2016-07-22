@@ -83,7 +83,7 @@ SETTING_OG_OFFSET_V9 = 15
 SETTING_OG_OFFSET_V10 = 17
 SETTING_OG_OFFSET_V11 = 18
 """Offset of the first object group in the settings"""
-SETTING_OG_OFFSET = 20
+SETTING_OG_OFFSET = 30
 
 
 """Offset of the object name setting within an object group"""
@@ -154,6 +154,8 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
             folder name. %(USING_METADATA_HELP_REF)s.</p>"""%globals())
         self.directory.dir_choice = DEFAULT_OUTPUT_FOLDER_NAME
 
+        self.dividerA = cps.Divider(line=True)
+
         self.wants_prefix = cps.Binary(
             "Add a prefix to file names?",
             True,
@@ -195,6 +197,30 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
             to omit the tokens from the spreadsheet.
             """ % globals())
 
+        self.dividerB = cps.Divider(line=True)
+
+        self.import_data = cps.Binary(
+            "Import data into this spreadsheet?", False,
+            doc="""This setting makes it possible to import data about individual
+            wells of a microplate from a formatted user-created platemap csv file
+            with information about individual plate wells. Select <i>%(YES)s</i> to
+            modify options for the format of the imported data. Select <i>%(NO)s</i>
+            to skip the step to import this data.
+            """ % globals())
+
+        self.data_filepath = cps.FilenameText(
+            "Import data file name", cps.NONE, doc="""This is the name of the data file.""", 
+            browse_msg = "Choose data file",
+            exts = [("Data file (*.csv)","*.csv"),("All files (*.*)","*.*")]
+        )
+
+        self.data_origin = cps.Coordinates(
+            "Enter the origin of the microplate:", (0, 0), doc="""
+            Willy Wonka!
+            """ % globals())
+
+        self.dividerC = cps.Divider(line=True)
+        
         self.wants_overwrite_without_warning = cps.Binary(
             "Overwrite existing files without warning?", False,
             doc="""This setting either prevents or allows overwriting of
@@ -391,8 +417,12 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
                   self.wants_genepattern_file, self.how_to_specify_gene_name,
                   self.use_which_image_for_gene_name,self.gene_name_column,
                   self.wants_everything, self.columns, self.nan_representation,
+                  self.dividerA,
                   self.wants_prefix, self.prefix, self.insert_prefix,
-                  self.add_tokens,
+                  self.dividerB,
+                  self.add_tokens, self.import_data, self.data_filepath,
+                  self.data_origin,
+                  self.dividerC,
                   self.wants_overwrite_without_warning]
         for group in self.object_groups:
             result += [group.name, group.previous_file, group.file_name,
@@ -401,10 +431,12 @@ class ExportToSpreadsheetPlus(cpm.CPModule):
 
     def visible_settings(self):
         """Return the settings as seen by the user"""
-        result = [self.delimiter, self.directory, self.wants_prefix]
+        result = [self.delimiter, self.directory, self.dividerA, self.wants_prefix]
         if self.wants_prefix:
-            result += [self.prefix]
-            result += [self.insert_prefix]
+            result += [self.prefix, self.insert_prefix]
+        result += [self.dividerB, self.import_data]
+        if self.import_data:
+            result += [self.data_filepath, self.data_origin, self.dividerC]
         result += [
             self.add_tokens, self.wants_overwrite_without_warning, self.add_metadata,
             self.excel_limits, self.nan_representation, self.pick_columns]
