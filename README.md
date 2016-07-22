@@ -1,6 +1,6 @@
 # CellProfilerPlugin
 
-This is a plugin for CellProfiler. Just copy the plugins directory to your CellProfiler directory.
+This is a plugin for CellProfiler, using code from [Cell Profiler's](https://github.com/CellProfiler/CellProfiler) ExportToSpreadsheet module. Just copy the plugins directory to your CellProfiler directory.
 
 This plugin was developed for CellProfiler 2.2.0 rev e82cb3c.
 
