@@ -9,4 +9,4 @@ Currently this plugin adds the module ExportToSpreadsheetPlus, which offers the 
 *image--L0000--S00--U04--V00--J14--E01--O00--X00--Y00--T0000--Z00--C00.ome.tif*
 
 So something like this is output to the Image.csv:
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text]("https://github.com/BandW2011/CellProfilerPlugin/blob/master/img/spreadsheetA.png")
