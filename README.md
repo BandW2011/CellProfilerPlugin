@@ -10,7 +10,7 @@ Currently this plugin adds the module ExportToSpreadsheetPlus, which offers the 
 
 The plugin:
 
-![Uh Oh! The image isn't here!]()
+![Uh Oh! The image isn't here!](https://raw.githubusercontent.com/BandW2011/CellProfilerPlugin/master/img/screenshotA.png "Yes, this is a screenshot!")
 
 So something like this is output to the Image.csv:
 
