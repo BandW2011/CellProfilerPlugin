@@ -1,5 +1,5 @@
 # Notes
-
+## To-Do:
 1. ~~Put prefix into its own column~~
 2. ~~Break up filename into these variables: u, v, j, x, y, each variable gets its own column~~
 3. Input to spreadsheet (A1 to UV)
@@ -19,3 +19,12 @@
 constant format until after cXX
 CXX.ome.tif, cXX--XXX.ome.tif, CXX--XXX.ome.tif
 plotly? 5d data
+---
+Goal:
+* Add features to the ExportToSpreadsheetPlus module
+* Make it so that the user can input a spreadsheet (preferably a .csv file) into the module
+* The spreadsheet should be made by the user, and should have a well coordinate (Alphanumeric), and information about the contents of the well
+* Preferably, the columns should be wellid (coordinates), contents of the well, concentration, number of wells, and number of used wells
+* The format of this spreadsheet has not been currently decided
+* Should be user friendly
+* The module will get the information from each wellid, convert it into MatrixScreen coords (U and V), and insert it into the Images.csv
