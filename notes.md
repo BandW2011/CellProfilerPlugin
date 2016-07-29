@@ -16,8 +16,8 @@
     * user friendly
 
 ---
-constant format until after cXX
-CXX.ome.tif, cXX--XXX.ome.tif, CXX--XXX.ome.tif
+constant format until after cXX  
+CXX.ome.tif, cXX--XXX.ome.tif, CXX--XXX.ome.tif  
 plotly? 5d data
 
 ---
